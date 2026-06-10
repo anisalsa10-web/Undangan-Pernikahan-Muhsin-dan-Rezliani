@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Undangan Pernikahan Muhsin & Rezliani</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:wght@300;600&family=Montserrat:wght@300;400&family=Pinyon+Script&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+    
+    <style>
+        :root {
+            /* Tema Hijau Sage Lembut Minimalis & Putih Elegan */
+            --sage: #a3b19b;
+            --light-sage: #e8ece7;
+            --dark-sage: #4a5d4e;
+            --cream: #f4f6f3;
+            --white: #ffffff;
+        }
+ 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+ 
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--cream);
+            color: #444;
+            overflow-x: hidden;
+            position: relative;
+        }
+ 
+        /* Hiasan Aksesoris Sudut Website (Elegan & Cute) */
+        .corner-ornament {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--sage);
+            z-index: 999;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+        .top-left { top: 15px; left: 15px; border-right: none; border-bottom: none; border-radius: 8px 0 0 0; }
+        .top-right { top: 15px; right: 15px; border-left: none; border-bottom: none; border-radius: 0 8px 0 0; }
+        .bottom-left { bottom: 15px; left: 15px; border-right: none; border-top: none; border-radius: 0 0 0 8px; }
+        .bottom-right { bottom: 15px; right: 15px; border-left: none; border-top: none; border-radius: 0 0 8px 0; }
+ 
+        /* Fixed Background Parallax */
+        .main-bg {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(244,246,243,0.85), rgba(244,246,243,0.85)), 
+            url('https://drive.google.com/thumbnail?id=1ZR35I5_jBQMsM9BsPB1poPcNF-QGQJjk&sz=w1200') center/cover no-repeat fixed;
+            z-index: -1;
+        }
+ 
+        /* Overlay Pembuka */
+        #overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100vh;
+            background: linear-gradient(rgba(74,93,78,0.4), rgba(74,93,78,0.6)),
+            url('https://drive.google.com/thumbnail?id=1ZR35I5_jBQMsM9BsPB1poPcNF-QGQJjk&sz=w1200') center/cover no-repeat;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            padding: 0 20px;
+            transition: 1.5s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+ 
+        .btn-open {
+            margin-top: 25px;
+            padding: 12px 35px;
+            background: var(--sage);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            transition: 0.3s;
+        }
+ 
+        .btn-open:hover { transform: scale(1.05); background: var(--dark-sage); }
+ 
+        /* Typography */
+        .script { font-family: 'Pinyon Script', cursive; color: var(--dark-sage); }
+        .alex-brush { font-family: 'Alex Brush', cursive; color: var(--dark-sage); font-weight: normal; }
+        .serif { font-family: 'Cormorant Garamond', serif; }
+ 
+        header {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        section { padding: 60px 20px; max-width: 800px; margin: 0 auto; text-align: center; }
+ 
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 25px;
+            border-radius: 30px;
+            border: 1px solid var(--light-sage);
+            box-shadow: 0 10px 30px rgba(163,177,155,0.1);
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        /* Ornamen kecil kartu */
+        .card::before {
+            content: ''; position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            border: 1px solid rgba(163,177,155,0.2); border-radius: 23px; pointer-events: none;
+        }
+ 
+        /* Profil Mempelai Styles */
+        .profile-img {
+            width: 180px; height: 180px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid var(--white);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            margin: 15px auto;
+        }
+        .parent-info {
+            font-size: 0.95rem; color: #666; margin-top: 5px; line-height: 1.5;
+        }
+        .couple-separator {
+            font-size: 2.5rem; font-family: 'Alex Brush', cursive; color: var(--sage); margin: 30px 0;
+        }
+ 
+        /* Countdown */
+        .timer { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 25px; }
+        .t-box { background: var(--sage); color: white; padding: 15px; border-radius: 12px; min-width: 75px; }
+        .t-box span { display: block; font-size: 1.8rem; font-weight: bold; }
+ 
+        /* Fitur Salin Rekening */
+        .btn-copy {
+            margin-top: 10px;
+            padding: 6px 15px;
+            background: var(--sage);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.3s;
+        }
+        .btn-copy:hover { background: var(--dark-sage); }
+ 
+        /* Forms & Comments */
+        .form-group { text-align: left; margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: bold; color: var(--dark-sage); }
+        input[type="text"], textarea { width: 100%; padding: 12px; border: 1px solid var(--sage); border-radius: 10px; font-family: inherit; background: var(--white); }
+        
+        .comments-display {
+            margin-top: 25px; text-align: left; max-height: 300px; overflow-y: auto;
+            border-top: 1px solid var(--light-sage); padding-top: 20px; display: none;
+        }
+        .comment-item {
+            background: var(--light-sage); padding: 15px; border-radius: 15px; margin-bottom: 12px;
+        }
+        .comment-item strong { color: var(--dark-sage); display: block; margin-bottom: 5px; }
+ 
+        audio {
+            position: fixed; bottom: 20px; left: 20px; z-index: 1000; opacity: 0.7;
+        }
+
+        /* ===== RESPONSIVE STYLE UNTUK LAYAR HP ===== */
+        @media (max-width: 600px) {
+            #overlay h1.alex-brush {
+                font-size: 3rem !important;
+            }
+            header h1.alex-brush {
+                font-size: 3.5rem !important;
+                line-height: 1.2;
+                padding: 0 10px;
+            }
+            header h2.serif {
+                font-size: 1.3rem !important;
+                letter-spacing: 3px !important;
+            }
+            .t-box {
+                min-width: 65px;
+                padding: 10px;
+                font-size: 0.8rem;
+            }
+            .t-box span {
+                font-size: 1.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+ 
+    <div class="corner-ornament top-left"></div>
+    <div class="corner-ornament top-right"></div>
+    <div class="corner-ornament bottom-left"></div>
+    <div class="corner-ornament bottom-right"></div>
+
+    <div class="main-bg"></div>
+    
+    <audio id="myAudio" src="Shane Filan - Beautiful In White (Official Video).mp3" loop></audio>
+ 
+    <div id="overlay">
+        <h3 style="letter-spacing: 5px; font-weight: 300; font-size: 0.9rem;">WEDDING INVITATION</h3>
+        <h1 class="alex-brush" style="font-size: 4.5rem; color: white; margin: 15px 0;">Muhsin & Rezliani</h1>
+        <div class="guest-box">
+            <p class="serif" style="font-size: 1.1rem; letter-spacing: 1px;">Kepada Yth. Bapak/Ibu/Saudara/i:</p>
+            <span class="guest-name" id="guestName" style="font-weight: bold; display: block; margin: 10px 0; font-size: 1.3rem;">Tamu Undangan</span>
+        </div>
+        <p class="serif" style="font-size: 1.4rem;">Minggu, 21 Juni 2026</p>
+        <button class="btn-open" onclick="startInv()">BUKA UNDANGAN</button>
+    </div>
+ 
+    <header>
+        <h2 class="serif reveal" style="letter-spacing: 5px; font-size: 1.8rem;">THE WEDDING OF</h2>
+        <h1 class="alex-brush reveal" style="font-size: 5.5rem; margin: 10px 0; width: 100%;">Muhsin & Rezliani</h1>
+        <div class="timer reveal">
+            <div class="t-box"><span id="days">00</span>Hari</div>
+            <div class="t-box"><span id="hours">00</span>Jam</div>
+            <div class="t-box"><span id="mins">00</span>Menit</div>
+            <div class="t-box"><span id="secs">00</span>Detik</div>
+        </div>
+    </header>
+ 
+    <section>
+        <div class="card reveal">
+            <h2 class="serif" style="font-size: 2rem; color: var(--dark-sage); margin-bottom: 20px;">QS. Ar-Rum: 21</h2>
+            <p class="serif" style="font-size: 1.6rem; line-height: 2; direction: rtl; margin-bottom: 15px; font-weight: 600;">
+               وَمِنْ اٰيٰتِهٖٓ اَنْ خَلَقَ لَكُمْ مِّنْ اَنْفُسِكُمْ اَزْوَاجًا لِّتَسْكُنُوْٓا اِلَيْهَا وَجَعَلَ بَيْنَكُمْ مَّوَدَّةً وَّرَحْمَةً ۗ اِنَّ فِيْ ذٰلِكَ لَاٰيٰتٍ لِّقَوْمٍ يَّتَفَكَّرُوْنَ
+            </p>
+            <p style="line-height: 1.6; font-size: 0.95rem; color: #555; font-style: italic;">
+                "Dan di antara tanda-tanda (kebesaran)-Nya ialah Dia menciptakan pasangan-pasangan untukmu dari jenismu sendiri, agar kamu cenderung dan merasa tenteram kepadanya, dan Dia menjadikan di antaramu rasa kasih dan sayang. Sungguh, pada yang demikian itu benar-benar terdapat tanda-tanda (kebesaran Allah) bagi kaum yang berpikir."
+            </p>
+        </div>
+    </section>
+ 
+    <section>
+        <div class="card reveal">
+            <h2 class="serif" style="font-size: 2.2rem; color: var(--dark-sage); margin-bottom: 25px;">Mempelai</h2>
+            
+            <div class="mempelai-laki">
+                <img class="profile-img" src="https://drive.google.com/thumbnail?id=1TqyoU8nYTPAdhf-MXMMKSOq-DZVQfeRo&sz=500" alt="Foto Ahmad">
+                <h3 class="alex-brush" style="font-size: 3rem; margin: 5px 0;">Ahmad Muhsinudiin</h3>
+                <p class="parent-info">Putra dari Bapak Sukarsidi & Ibu Temurah</p>
+            </div>
+            
+            <div class="couple-separator">&</div>
+            
+            <div class="mempelai-perempuan">
+                <img class="profile-img" src="https://drive.google.com/thumbnail?id=1JIZnFt4pT41VHA98VFpVETDmQYejOEcv&sz=500" alt="Foto Rezliani">
+                <h3 class="alex-brush" style="font-size: 3rem; margin: 5px 0;">Rezliani Salsabila</h3>
+                <p class="parent-info">Putri dari Bapak Rezandi & Ibu Elin Munzilin</p>
+            </div>
+        </div>
+    </section>
+ 
+    <section>
+        <div class="card reveal">
+            <h2 class="serif" style="font-size: 2.5rem; color: var(--dark-sage); margin-bottom: 30px;">Waktu & Lokasi</h2>
+            <div style="margin-bottom: 30px;">
+                <h3 class="serif" style="font-size: 1.8rem;">Akad Nikah</h3>
+                <p>Minggu, 21 Juni 2026</p>
+                <p>Pukul 08:00 WIB</p>
+                <p style="margin-top: 10px;">Jl. CCI XI No.16 RT/RW 006/015 Desa Mekarrahayu Kec Margaasih Kabupaten Bandung Jawa Barat</p>
+            </div>
+            <div style="margin-bottom: 30px;">
+                <h3 class="serif" style="font-size: 1.8rem;">Resepsi</h3>
+                <p>Minggu, 21 Juni 2026</p>
+                <p>Pukul 10:00 WIB</p>
+                <p style="margin-top: 10px;">Lokasi yang sama dengan Akad Nikah</p>
+            </div>
+            <iframe
+    src="https://maps.google.com/maps?q=-6.9757367,107.5551393&t=&z=17&ie=UTF8&iwloc=&output=embed"
+    width="100%"
+    height="300"
+    style="border:0; border-radius:20px;"
+    allowfullscreen=""
+    loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade">
+</iframe>
+        </div>
+    </section>
+ 
+    <section>
+        <div class="card reveal" style="background: var(--sage); color: white; border: none;">
+            <h2 class="serif" style="font-size: 2.5rem; margin-bottom: 10px;">Wedding Gift</h2>
+            <p style="margin: 15px 0;">Terima kasih atas doa restu Anda. Jika ingin memberikan tanda kasih, dapat melalui:</p>
+            <div style="background: white; color: var(--dark-sage); padding: 20px; border-radius: 20px;">
+                <p><strong>Bank BCA</strong></p>
+                <p style="font-size: 1.5rem; font-weight: bold; letter-spacing: 2px; margin-top: 5px;">
+                    <span id="noRekening">3790659901</span>
+                </p>
+                <button class="btn-copy" onclick="copyToClipboard()">Salin No. Rekening</button>
+                <p class="alex-brush" style="font-size: 2.2rem; margin-top: 10px;">Ahmad Muhsinudiin</p>
+            </div>
+        </div>
+    </section>
+ 
+    <section>
+        <div class="card reveal">
+            <h2 class="serif" style="font-size: 2.5rem; margin-bottom: 20px;">Konfirmasi Kehadiran</h2>
+            <p style="margin-bottom: 30px; font-size: 0.9rem; line-height: 1.6;">"Setiap doa dan harapan baik dari Anda memiliki makna yang mendalam bagi kami, dan menjadi bagian penting dari kebahagiaan ini."</p>
+            
+            <form id="rsvpForm">
+                <div class="form-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" id="formNama" placeholder="Masukkan nama Anda" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Apakah kamu akan hadir?</label>
+                    <div style="display: flex; gap: 20px;">
+                        <label style="font-weight: 400;"><input type="radio" name="hadir" value="Ya, Saya Hadir" checked> Ya, Saya Hadir</label>
+                        <label style="font-weight: 400;"><input type="radio" name="hadir" value="Maaf, Tidak Bisa"> Maaf, Tidak Bisa</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Berapa orang yang akan hadir?</label>
+                    <input type="text" id="formJumlah" placeholder="Contoh: 2 Orang">
+                </div>
+                
+                <div class="form-group">
+                    <label>Ucapan & Doa</label>
+                    <textarea id="formUcapan" rows="4" placeholder="Tulis ucapan selamat Anda..." required></textarea>
+                </div>
+                
+                <button type="button" class="btn-open" style="width: 100%;" onclick="submitKomentar()">Kirim Konfirmasi</button>
+            </form>
+
+            <div class="comments-display" id="commentBox"></div>
+        </div>
+    </section>
+ 
+    <script>
+        // =========================================================
+        // PENGATURAN DATABASE FIREBASE
+        // =========================================================
+        // KOPAS DAN GANTI bagian ini dengan data firebase milikmu!
+        const firebaseConfig = {
+            apiKey: "AIzaSyAki8VcwrbH0IGq9vchbEZw7ya_p942VDk",
+            authDomain: "undangan-muhsin-dan-rezliani.firebaseapp.com",
+            databaseURL: "https://undangan-muhsin-dan-rezliani-default-rtdb.firebaseio.com",
+            projectId: "undangan-muhsin-dan-rezliani",
+            storageBucket: "undangan-muhsin-dan-rezliani.firebasestorage.app",
+            messagingSenderId: "193869518817",
+            appId: "1:193869518817:web:3b428983afc3aadfb7a4a0"
+        };
+
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const commentsRef = database.ref('wedding_comments');
+
+        // Fungsi Membuka Undangan & Autoplay Musik
+        function startInv() {
+            document.getElementById('overlay').style.transform = 'translateY(-100vh)';
+            document.body.style.overflow = 'auto';
+            var audio = document.getElementById("myAudio");
+            audio.play();
+        }
+ 
+        // Countdown Timer
+        const targetDate = new Date("June 21, 2026 08:00:00").getTime();
+        
+        setInterval(() => {
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+ 
+            const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const s = Math.floor((diff % (1000 * 60)) / 1000);
+ 
+            document.getElementById('days').innerText = d;
+            document.getElementById('hours').innerText = h;
+            document.getElementById('mins').innerText = m;
+            document.getElementById('secs').innerText = s;
+        }, 1000);
+ 
+        // Scroll Animation (Reveal)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+ 
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+ 
+        // Kunci Scroll sebelum dibuka
+        document.body.style.overflow = 'hidden';
+
+        // Fitur Membaca Parameter URL Nama Tamu (?to=Nama+Tamu)
+        const urlParams = new URLSearchParams(window.location.search);
+        const guestName = urlParams.get('to');
+        if (guestName) {
+            document.getElementById('guestName').innerText = guestName;
+        }
+
+        // Fitur Salin Rekening ke Clipboard
+        function copyToClipboard() {
+            const rekText = document.getElementById('noRekening').innerText;
+            navigator.clipboard.writeText(rekText).then(() => {
+                alert('Nomor rekening berhasil disalin: ' + rekText);
+            }).catch(err => {
+                alert('Gagal menyalin teks, silakan salin secara manual.');
+            });
+        }
+
+        // =========================================================
+        // FITUR UTAMAKAN REAL-TIME KOMENTAR FIREBASE
+        // =========================================================
+        
+        // Membaca komentar langsung secara global dari Firebase (Real-time untuk semua orang)
+        commentsRef.on('value', (snapshot) => {
+            const container = document.getElementById('commentBox');
+            container.innerHTML = ''; // Bersihkan isi lama
+            
+            const data = snapshot.val();
+            if (data) {
+                // Diubah ke bentuk array agar komentar terbaru berada di atas
+                const keys = Object.keys(data);
+                keys.reverse().forEach(key => {
+                    const item = data[key];
+                    const div = document.createElement('div');
+                    div.className = 'comment-item';
+                    div.innerHTML = `<strong>${item.nama} (${item.status})</strong><p>${item.ucapan}</p>`;
+                    container.appendChild(div);
+                });
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        });
+
+        // Menyimpan data komentar langsung ke Firebase cloud
+        function submitKomentar() {
+            const nama = document.getElementById('formNama').value;
+            const ucapan = document.getElementById('formUcapan').value;
+            const status = document.querySelector('input[name="hadir"]:checked').value;
+            
+            if (!nama || !ucapan) {
+                alert('Mohon isi Nama dan Ucapan Anda.');
+                return;
+            }
+
+            // Push data baru ke Firebase Cloud
+            commentsRef.push({
+                nama: nama,
+                ucapan: ucapan,
+                status: status,
+                timestamp: firebase.database.ServerValue.TIMESTAMP
+            }).then(() => {
+                alert('Terima kasih atas konfirmasinya!');
+                document.getElementById('rsvpForm').reset();
+            }).catch((error) => {
+                alert('Gagal mengirim ucapan, periksa koneksi internet Anda atau setelan rules Firebase.');
+                console.error(error);
+            });
+        }
+    </script>
+</body>
+</html>
